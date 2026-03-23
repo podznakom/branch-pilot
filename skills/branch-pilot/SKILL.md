@@ -9,14 +9,30 @@ Keep branch guidance short, practical, and safe.
 
 ## Modes
 
-Use exactly one mode:
+Use these stages in order:
 
-- Install mode: the user explicitly asks to install, enable, or patch repo instructions for `branch-pilot`.
+- Bootstrap check: on the first explicit use of `$branch-pilot` in a repo that is not installed yet, first ask whether to patch `AGENTS.md` now.
+- Install mode: patch repo instructions after the user explicitly asks to install or agrees to the bootstrap prompt.
 - Runtime mode: decide whether work should stay in the current branch or move before non-trivial implementation or before commit, push, or merge decisions.
+
+## Bootstrap Check
+
+If the user explicitly invokes `$branch-pilot` and the repository root `AGENTS.md` does not already contain the `branch workflow guard` block:
+
+- Treat the repo as not installed yet.
+- Ask one short yes/no question before normal branch advice:
+  - `This repo is not set up for automatic branch checks yet. Do you want me to patch AGENTS.md now so I can run automatically next time?`
+- Do not patch `AGENTS.md` until the user agrees.
+- If the user agrees, run Install Mode first, confirm briefly, then continue with the current runtime decision.
+- If the user declines, continue with this one runtime check without patching `AGENTS.md`.
+- Do not keep repeating the same install prompt in the same turn.
 
 ## Install Mode
 
-Enter install mode only when the user says things like `install branch-pilot`, `set up branch-pilot`, `patch AGENTS.md for branch-pilot`, or `enable branch workflow guard`.
+Enter install mode when either is true:
+
+- the user says things like `install branch-pilot`, `set up branch-pilot`, `patch AGENTS.md for branch-pilot`, or `enable branch workflow guard`
+- the user explicitly invoked `$branch-pilot` in an uninstalled repo and then agreed to the bootstrap prompt
 
 Do this:
 
@@ -29,7 +45,8 @@ Do this:
    - Do not duplicate the block.
    - Do not rewrite unrelated sections.
    - If `AGENTS.md` does not exist, create it with this block.
-4. Confirm briefly that `branch-pilot` is installed.
+4. Confirm briefly that automatic branch checks are now enabled for this repo.
+5. If install mode started from the bootstrap prompt, continue with the current runtime decision after the install is done.
 
 Insert this exact block:
 
@@ -58,7 +75,7 @@ When called, `$branch-pilot` must:
 - avoid creating, renaming, deleting, pushing, merging, or force-pushing branches unless explicitly asked
 ```
 
-Do not patch `AGENTS.md` during normal runtime use.
+Do not patch `AGENTS.md` without the user's yes. Outside install mode, do not rewrite `AGENTS.md`.
 
 ## Runtime Mode
 
@@ -140,6 +157,12 @@ Keep names short, specific, and easy to understand.
 - Do not rewrite `AGENTS.md` outside install mode.
 
 ## Output
+
+If the repo is not installed yet and the user explicitly invoked `$branch-pilot`, ask this before normal branch output:
+
+`This repo is not set up for automatic branch checks yet. Do you want me to patch AGENTS.md now so I can run automatically next time?`
+
+After the user answers, either run Install Mode and continue, or continue with one-off runtime advice without patching.
 
 Always respond before implementation with this exact section shape:
 

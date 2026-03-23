@@ -37,30 +37,28 @@ cp -R skills/branch-pilot ~/.codex/skills/
 
 После установки перезапусти Codex.
 
-## Один Раз Включить В Репозитории
+## Первый Запуск В Репозитории
 
-Шаг 2: в репозитории, который хочешь защитить, попроси Codex:
+Шаг 2: в первый явный вызов `branch-pilot` в репозитории он должен заметить, что repo ещё не настроен, и спросить, нужно ли сейчас пропатчить `AGENTS.md`.
+
+Пример:
 
 ```text
-install branch-pilot
+Use $branch-pilot to check whether this work should stay on the current branch.
 ```
 
-Можно сказать и так:
-
-- `set up branch-pilot`
-- `patch AGENTS.md for branch-pilot`
-- `enable branch workflow guard`
-
-Этот одноразовый шаг делает две вещи:
+Если пользователь соглашается, он делает две вещи:
 
 - убеждается, что в репозитории есть `.agents/skills/branch-pilot/`
 - патчит корневой `AGENTS.md`, чтобы Codex сам вызывал `$branch-pilot` перед нетривиальной работой
+
+Если хочется сразу пройти install-path, можно и напрямую сказать `install branch-pilot`, `set up branch-pilot` или `patch AGENTS.md for branch-pilot`.
 
 После этого обычно не нужно вызывать его вручную.
 
 ## Что Происходит Во Время Работы
 
-Когда `branch-pilot` срабатывает, он быстро смотрит на текущее git-состояние и возвращает короткое решение:
+После настройки repo `branch-pilot` быстро смотрит на текущее git-состояние и возвращает короткое решение:
 
 - stay on current branch
 - create a new branch

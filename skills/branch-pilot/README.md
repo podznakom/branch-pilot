@@ -12,14 +12,19 @@
 
 ## How To Install
 
+The first explicit use in a repo can bootstrap installation.
+
 Ask Codex to:
 
+- `use $branch-pilot to check this branch decision`
 - `install branch-pilot`
 - `set up branch-pilot`
 - `patch AGENTS.md for branch-pilot`
 - `enable branch workflow guard`
 
-On install, Codex should:
+If the repo is not set up yet and you explicitly call `$branch-pilot`, it should first ask whether to patch `AGENTS.md` now so it can run automatically next time.
+
+If you say yes, Codex should:
 
 - ensure `.agents/skills/branch-pilot/` exists
 - patch the repository root `AGENTS.md` once with the reusable trigger block
@@ -30,6 +35,8 @@ If the repo does not have an `AGENTS.md` yet, install mode should create one wit
 ## What Happens After Installation
 
 After the `AGENTS.md` block is in place, Codex should call `$branch-pilot` automatically before non-trivial implementation. The runtime check is intentionally light: it inspects Git state quickly, explains the branch decision in plain language, and then gets out of the way.
+
+If you say no to the bootstrap prompt, `branch-pilot` should still help for that one run, but it should not patch `AGENTS.md`.
 
 ## What It Does Not Do Automatically
 
