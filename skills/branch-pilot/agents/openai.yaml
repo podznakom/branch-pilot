@@ -1,0 +1,4 @@
+interface:
+  display_name: "branch-pilot"
+  short_description: "Lightweight git branch workflow guard"
+  default_prompt: "Use $branch-pilot before non-trivial work to decide whether to stay on the current branch or move to a safer one."
