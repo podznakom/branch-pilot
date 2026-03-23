@@ -7,6 +7,7 @@
 - checks the current branch, status, diff stats, and recent commits
 - warns when non-trivial work is happening in `main` or `master`
 - suggests 1-3 branch names when a new branch is the safer choice
+- can optionally create and switch to that safer local branch after explicit repo-level opt-in
 - tells you to split work when the current changes look mixed
 - stays brief and avoids Git jargon
 
@@ -30,6 +31,8 @@ If you say yes, Codex should:
 - patch the repository root `AGENTS.md` once with the reusable trigger block
 - avoid duplicating that block if it already exists
 
+It should also ask whether you want to allow automatic local branch switching in this repo. If you say yes to that second prompt, `branch-pilot` may create and switch to the recommended local branch later when the decision is clear and the worktree is safe.
+
 If the repo does not have an `AGENTS.md` yet, install mode should create one with the branch guard block.
 
 ## What Happens After Installation
@@ -38,10 +41,11 @@ After the `AGENTS.md` block is in place, Codex should call `$branch-pilot` autom
 
 If you say no to the bootstrap prompt, `branch-pilot` should still help for that one run, but it should not patch `AGENTS.md`.
 
+If automatic local branch switching is enabled for the repo, `branch-pilot` may create and switch to the recommended local branch without asking again each time. It still must not push, merge, or change remote state.
+
 ## What It Does Not Do Automatically
 
-- create branches
-- switch branches
+- create or switch branches by default
 - commit changes
 - push changes
 - open pull requests

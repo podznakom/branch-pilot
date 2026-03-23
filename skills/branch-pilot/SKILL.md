@@ -12,7 +12,7 @@ Keep branch guidance short, practical, and safe.
 Use these stages in order:
 
 - Bootstrap check: on the first explicit use of `$branch-pilot` in a repo that is not installed yet, first ask whether to patch `AGENTS.md` now.
-- Install mode: patch repo instructions after the user explicitly asks to install or agrees to the bootstrap prompt.
+- Install mode: patch repo instructions after the user explicitly asks to install, change auto-switch settings, or agrees to the bootstrap prompt.
 - Runtime mode: decide whether work should stay in the current branch or move before non-trivial implementation or before commit, push, or merge decisions.
 
 ## Bootstrap Check
@@ -23,7 +23,9 @@ If the user explicitly invokes `$branch-pilot` and the repository root `AGENTS.m
 - Ask one short yes/no question before normal branch advice:
   - `This repo is not set up for automatic branch checks yet. Do you want me to patch AGENTS.md now so I can run automatically next time?`
 - Do not patch `AGENTS.md` until the user agrees.
-- If the user agrees, run Install Mode first, confirm briefly, then continue with the current runtime decision.
+- If the user agrees, ask one more short yes/no question:
+  - `Do you also want to allow automatic local branch switching in this repo when I recommend a new branch?`
+- Run Install Mode first, apply the user's auto-switch choice, confirm briefly, then continue with the current runtime decision.
 - If the user declines, continue with this one runtime check without patching `AGENTS.md`.
 - Do not keep repeating the same install prompt in the same turn.
 
@@ -31,7 +33,7 @@ If the user explicitly invokes `$branch-pilot` and the repository root `AGENTS.m
 
 Enter install mode when either is true:
 
-- the user says things like `install branch-pilot`, `set up branch-pilot`, `patch AGENTS.md for branch-pilot`, or `enable branch workflow guard`
+- the user says things like `install branch-pilot`, `set up branch-pilot`, `patch AGENTS.md for branch-pilot`, `enable branch workflow guard`, `enable automatic branch switching for branch-pilot`, or `disable automatic branch switching for branch-pilot`
 - the user explicitly invoked `$branch-pilot` in an uninstalled repo and then agreed to the bootstrap prompt
 
 Do this:
@@ -45,8 +47,12 @@ Do this:
    - Do not duplicate the block.
    - Do not rewrite unrelated sections.
    - If `AGENTS.md` does not exist, create it with this block.
-4. Confirm briefly that automatic branch checks are now enabled for this repo.
-5. If install mode started from the bootstrap prompt, continue with the current runtime decision after the install is done.
+4. If the user explicitly enabled automatic branch switching, ensure this exact line exists directly below the block:
+   - `Auto branch switching for branch-pilot: enabled.`
+   - Add it only once.
+5. If the user explicitly disabled automatic branch switching, remove that exact line if it exists.
+6. Confirm briefly that automatic branch checks are enabled, and say whether automatic local branch switching is enabled or disabled for this repo.
+7. If install mode started from the bootstrap prompt, continue with the current runtime decision after the install is done.
 
 Insert this exact block:
 
@@ -76,6 +82,14 @@ When called, `$branch-pilot` must:
 ```
 
 Do not patch `AGENTS.md` without the user's yes. Outside install mode, do not rewrite `AGENTS.md`.
+
+## Auto-Switch Setting
+
+Treat automatic local branch switching as enabled only when the repository root `AGENTS.md` contains this exact line:
+
+`Auto branch switching for branch-pilot: enabled.`
+
+Add or remove that line only when the user explicitly agrees or explicitly asks to change the setting.
 
 ## Runtime Mode
 
@@ -147,9 +161,23 @@ Use this format:
 
 Keep names short, specific, and easy to understand.
 
+## Auto-Switch Behavior
+
+If automatic local branch switching is enabled and `create a new branch` is the right decision:
+
+- Choose the first good branch name, unless one recommended branch already exists and clearly matches the task.
+- Prefer local-only commands:
+  - `git switch -c <name>` when the branch does not exist yet
+  - `git switch <name>` when the branch already exists
+- Carry current work to the new branch only if the worktree is clean or the current changes are one logical task.
+- Stop instead of switching if changes are mixed, HEAD is detached, or git indicates merge, rebase, cherry-pick, revert, or bisect state.
+- Say one short line first with the planned branch name.
+- If the switch fails, stop and explain the failure briefly.
+- After switching, continue work on the new branch.
+
 ## Safety Rules
 
-- Do not create or switch branches unless the user explicitly asks.
+- Do not create or switch branches unless the user explicitly asks or this repo has explicit auto-switch opt-in enabled for `branch-pilot`.
 - Do not push unless the user explicitly asks.
 - Do not merge unless the user explicitly asks.
 - Do not force-push.
@@ -163,6 +191,13 @@ If the repo is not installed yet and the user explicitly invoked `$branch-pilot`
 `This repo is not set up for automatic branch checks yet. Do you want me to patch AGENTS.md now so I can run automatically next time?`
 
 After the user answers, either run Install Mode and continue, or continue with one-off runtime advice without patching.
+
+If automatic local branch switching is enabled and a new branch will be used, also include:
+
+- `auto-switch: enabled`
+- `planned branch: <name>`
+
+Then create or switch branch after the explanation if it is safe to do so.
 
 Always respond before implementation with this exact section shape:
 

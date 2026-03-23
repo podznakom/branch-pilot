@@ -9,6 +9,7 @@
 - checks the current branch, status, diff stats, and recent commits
 - warns when non-trivial work is happening in `main` or `master`
 - suggests 1-3 branch names when a new branch is the safer choice
+- can optionally create and switch to that safer local branch after explicit repo-level opt-in
 - tells you to split work when the current changes look mixed
 - stays brief, practical, and beginner-friendly
 
@@ -52,6 +53,8 @@ If you say yes to the prompt, it does two things:
 - ensures `.agents/skills/branch-pilot/` exists in that repo
 - patches the repo root `AGENTS.md` so Codex calls `$branch-pilot` automatically before non-trivial work
 
+It should also ask whether you want automatic local branch switching for this repo. If you opt in, `branch-pilot` may create and switch to the recommended local branch later when the branch decision is clear and the worktree is safe.
+
 You can still say `install branch-pilot`, `set up branch-pilot`, or `patch AGENTS.md for branch-pilot` directly if you want the install path on purpose.
 
 After that, you usually do not need to mention it manually.
@@ -68,10 +71,11 @@ After the repo is set up, `branch-pilot` quickly inspects the current git state 
 
 If a new branch is better, it also suggests 1-3 concrete branch names.
 
+If automatic local branch switching is enabled for the repo, it may create and switch to the recommended local branch without asking again each time. It still does not touch remotes.
+
 ## What It Does Not Do Automatically
 
-- create branches
-- switch branches
+- create or switch branches by default
 - commit
 - push
 - merge
