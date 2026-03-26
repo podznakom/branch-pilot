@@ -7,6 +7,13 @@ description: Decide whether implementation should continue in the current git br
 
 Keep branch guidance short, practical, and safe.
 
+## Language
+
+Match the user's language.
+
+- If the user is writing in Russian, keep all prompts, decisions, reasons, and next steps in Russian.
+- Do not mix English and Russian in the same answer, except for literal git commands, file paths, branch names, or exact `AGENTS.md` settings.
+
 ## Modes
 
 Use these stages in order:
@@ -20,11 +27,12 @@ Use these stages in order:
 If the user explicitly invokes `$branch-pilot` and the repository root `AGENTS.md` does not already contain the `branch workflow guard` block:
 
 - Treat the repo as not installed yet.
-- Ask one short yes/no question before normal branch advice:
-  - `This repo is not set up for automatic branch checks yet. Do you want me to patch AGENTS.md now so I can run automatically next time?`
+- Ask one short yes/no question in the user's language before normal branch advice.
+  - For Russian: `Этот репозиторий ещё не настроен для автоматических branch-checks. Хотите, я сейчас пропатчу AGENTS.md, чтобы в следующий раз запускаться автоматически?`
 - Do not patch `AGENTS.md` until the user agrees.
 - If the user agrees, ask one more short yes/no question:
-  - `Do you also want to allow automatic local branch switching in this repo when I recommend a new branch?`
+  - Ask it in the user's language.
+  - For Russian: `Хотите также разрешить мне автоматически создавать и переключать локальную ветку в этом repo, когда я уверенно понимаю, что новая ветка нужна?`
 - Run Install Mode first, apply the user's auto-switch choice, confirm briefly, then continue with the current runtime decision.
 - If the user declines, continue with this one runtime check without patching `AGENTS.md`.
 - Do not keep repeating the same install prompt in the same turn.
@@ -173,6 +181,10 @@ If automatic local branch switching is enabled and `create a new branch` is the 
 - Stop instead of switching if changes are mixed, HEAD is detached, or git indicates merge, rebase, cherry-pick, revert, or bisect state.
 - Say one short line first with the planned branch name.
 - If the switch fails, stop and explain the failure briefly.
+- If automatic local branch switching is not used, explain why in one short plain-language line:
+  - auto-switch is not enabled for this repo
+  - the worktree looks mixed
+  - git state is unsafe for switching right now
 - After switching, continue work on the new branch.
 
 ## Safety Rules
@@ -186,9 +198,7 @@ If automatic local branch switching is enabled and `create a new branch` is the 
 
 ## Output
 
-If the repo is not installed yet and the user explicitly invoked `$branch-pilot`, ask this before normal branch output:
-
-`This repo is not set up for automatic branch checks yet. Do you want me to patch AGENTS.md now so I can run automatically next time?`
+If the repo is not installed yet and the user explicitly invoked `$branch-pilot`, ask the bootstrap question in the user's language before normal branch output.
 
 After the user answers, either run Install Mode and continue, or continue with one-off runtime advice without patching.
 
@@ -199,33 +209,37 @@ If automatic local branch switching is enabled and a new branch will be used, al
 
 Then create or switch branch after the explanation if it is safe to do so.
 
-Always respond before implementation with this exact section shape:
+Always respond before implementation in the user's language with this section shape.
+
+For Russian, use:
 
 ```md
 ### branch-pilot
-One-line decision: create a new branch
+Решение в одну строку: создать новую ветку
 
-### why
-- reason
-- reason
-- reason
+### почему
+- причина
+- причина
+- причина
 
-### do this now
-One concrete next step
+### что делать сейчас
+Один конкретный следующий шаг
 ```
 
-Allowed one-line decisions:
+For Russian, allowed one-line decisions are:
 
-- `stay on current branch`
-- `create a new branch`
-- `split current work`
-- `ready to commit`
-- `ready for PR later`
+- `остаться в текущей ветке`
+- `создать новую ветку`
+- `разделить текущую работу`
+- `готово к коммиту`
+- `готово к PR позже`
 
 If a new branch is recommended, also include:
 
 - `branch type: <type>`
 - `good branch names: <name>, <name>, <name>`
+
+If automatic local branch switching did not happen, say why in one short line.
 
 Keep the reasons short, plain, and useful. Explain the branch choice like you are talking to a smart beginner. If moving away from `main` or `master`, briefly explain that it is safer, easier to review, and easier to roll back.
 

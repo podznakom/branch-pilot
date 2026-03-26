@@ -10,6 +10,7 @@
 - warns when non-trivial work is happening in `main` or `master`
 - suggests 1-3 branch names when a new branch is the safer choice
 - can optionally create and switch to that safer local branch after explicit repo-level opt-in
+- speaks in the user's language and can stay fully in Russian for Russian chats
 - tells you to split work when the current changes look mixed
 - stays brief, practical, and beginner-friendly
 
@@ -72,6 +73,8 @@ After the repo is set up, `branch-pilot` quickly inspects the current git state 
 If a new branch is better, it also suggests 1-3 concrete branch names.
 
 If automatic local branch switching is enabled for the repo, it may create and switch to the recommended local branch without asking again each time. It still does not touch remotes.
+
+If it recommends a new branch but does not switch, it should say why in plain language: auto-switch is off for this repo, the worktree is mixed, or git state is unsafe right now.
 
 ## What It Does Not Do Automatically
 

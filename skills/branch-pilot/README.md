@@ -8,6 +8,7 @@
 - warns when non-trivial work is happening in `main` or `master`
 - suggests 1-3 branch names when a new branch is the safer choice
 - can optionally create and switch to that safer local branch after explicit repo-level opt-in
+- speaks in the user's language and can stay fully in Russian for Russian chats
 - tells you to split work when the current changes look mixed
 - stays brief and avoids Git jargon
 
@@ -42,6 +43,8 @@ After the `AGENTS.md` block is in place, Codex should call `$branch-pilot` autom
 If you say no to the bootstrap prompt, `branch-pilot` should still help for that one run, but it should not patch `AGENTS.md`.
 
 If automatic local branch switching is enabled for the repo, `branch-pilot` may create and switch to the recommended local branch without asking again each time. It still must not push, merge, or change remote state.
+
+If it recommends a new branch but does not switch, it should say why in plain language: auto-switch is off for this repo, the worktree looks mixed, or git state is unsafe right now.
 
 ## What It Does Not Do Automatically
 
